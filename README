@@ -17,16 +17,16 @@ This bot send daily Bible reading reminders with Bible references which will let
 
 3. Create a new Telegram bot and obtain the API token. You can follow the instructions in the [Telegram Bot API documentation](https://core.telegram.org/bots#botfather) to create a new bot and obtain the token.
 
-4. Set the environment variable `TELEGRAM_API_TOKEN` with your Telegram bot API token.
+4. Set the environment variable `TELEGRAM_BOT_TOKEN` with your Telegram bot API token.
 
 5. Run the bot:
     ```
-    python main.py
+    python bot.py
     ```
 
 6. Open Telegram and search for your bot. Start a conversation with the bot and you should be able to interact with it.
 
-7. Customize the bot's behavior by modifying the code in `main.py` according to your requirements.
+7. Customize the bot's behavior by modifying the code in `bot.py` according to your requirements.
 
 ## Usage
 
