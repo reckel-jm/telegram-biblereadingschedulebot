@@ -1,5 +1,6 @@
 import datetime
 import logging
+import csv
 from dataclasses import dataclass
 import os
 from telegram import ReplyKeyboardMarkup, Update
@@ -46,18 +47,17 @@ def get_todays_bible_reading(filename: str = 'schedule.csv') -> BibleReadingSche
     
     # Read the schedule.csv file
     with open(filename, 'r') as file:
-        lines = file.readlines()
-    
-    # Find the entry for today's date
-    for line in lines:
-        parts = line.strip().split(';')
-        date_str = parts[0]
-        ot_reading = parts[2]
-        nt_reading = parts[1]
-        this_date = datetime.date.fromisoformat(date_str)
+        csv_reader = csv.reader(file, delimiter=',', quotechar='"')
 
-        if this_date == today:
-            return BibleReadingScheduleEntry(this_date, ot_reading, nt_reading)
+        # Find the entry for today's date
+        for row in csv_reader:
+            date_str   = row[0]
+            ot_reading = row[2]
+            nt_reading = row[1]
+            this_date = datetime.date.fromisoformat(date_str)
+
+            if this_date == today:
+                return BibleReadingScheduleEntry(this_date, ot_reading, nt_reading)
     
     # If no entry is found for today, return None
     return None
