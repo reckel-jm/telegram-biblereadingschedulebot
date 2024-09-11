@@ -54,10 +54,14 @@ def get_todays_bible_reading(filename: str = 'schedule.csv') -> BibleReadingSche
             date_str   = row[0]
             ot_reading = row[2]
             nt_reading = row[1]
-            this_date = datetime.date.fromisoformat(date_str)
-
-            if this_date == today:
-                return BibleReadingScheduleEntry(this_date, ot_reading, nt_reading)
+            
+            # This is necessary for the headline which we don't take into account
+            try:
+                this_date = datetime.datetime.strptime(date_str, "%m-%d-%y").date()
+                if this_date == today:
+                    return BibleReadingScheduleEntry(this_date, ot_reading, nt_reading)
+            except:
+                next
     
     # If no entry is found for today, return None
     return None
