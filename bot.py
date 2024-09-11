@@ -66,6 +66,27 @@ def get_todays_bible_reading(filename: str = 'schedule.csv') -> BibleReadingSche
     # If no entry is found for today, return None
     return None
 
+async def specific_set_time(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """Activates the Bible study reminder with a specific argument given"""
+    time_str = context.args[0].strip()
+    time_parts = time_str.split(':')
+    t = None
+    try:
+        hour = int(time_parts[0])
+        minute = int(time_parts[1])
+        t = datetime.time(hour, minute)
+    except ValueError:
+        await update.message.reply_text(text='Invalid time format. Please use the format HH:MM.')
+        return SET_TIME
+    
+    context.job_queue.run_daily(remind_bible_study, 
+                                t, 
+                                days=(0, 1, 2, 3, 4, 5, 6),
+                                chat_id=update.message.chat_id, 
+                                name=str(update.message.chat_id)
+                                )
+    await update.message.reply_text(text=f'Activated Bible study reminder daily at {t.strftime("%H:%M")} UTC.')
+    
 
 async def create_bible_study_reminder(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text(text='Hey, it is great that you want to read the Bible daily. I will help you with that.')
@@ -325,6 +346,7 @@ def main() -> None:
     application.add_handler(CommandHandler("respondchatid", respond_chat_id))
     application.add_handler(CommandHandler("remindbiblestudy", remind_bible_study_once))
     application.add_handler(CommandHandler("deletebiblestudyreminder", delete_reminder))
+    application.add_handler(CommandHandler("sst", specific_set_time)) 
     application.add_handler(set_timer_conversation_handler)
     application.add_handler(CommandHandler("myreminders", send_all_reminders))
     application.add_handler(set_language_conversation_handler)
